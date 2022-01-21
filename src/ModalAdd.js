@@ -1,7 +1,7 @@
 import { Form, Input, Modal, Radio, Select } from "antd";
 import FormColorPicker from "./FormColorPicker";
 
-export default function ModalAdd({ visible, onCancel, onOk }) {
+export default function ModalAdd({ visible, onCancel, onOk, colorList = [] }) {
   const [form] = Form.useForm();
 
   const handleSubmit = () => {
@@ -34,9 +34,16 @@ export default function ModalAdd({ visible, onCancel, onOk }) {
       <Form.Item noStyle shouldUpdate={(prev, cur) => prev.target !== cur.target}>
         {({ getFieldValue }) => {
           return getFieldValue('target') === 'color' ?
-            <Form.Item name={'color'} label='色值' initialValue={'#FFF'} rules={[require]}>
-              <FormColorPicker />
-            </Form.Item> :
+            <div>
+              <Form.Item name={'color'} label='色值' initialValue={'#FFF'} rules={[require]}>
+                <FormColorPicker />
+              </Form.Item>
+              <Form.Item name={'color'} label='色值'>
+                <Select>
+                  {colorList.map(item => <Select.Option key={`var(--${item.name})`}>{item.remark}(--{item.name})</Select.Option>)}
+                </Select>
+              </Form.Item>
+            </div> :
             <Form.Item required name={'value'} label='内容' rules={[require]}>
               <Input placeholder="eg: 100px" />
             </Form.Item>

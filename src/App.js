@@ -15,6 +15,13 @@ function App() {
   const [variableList, setVariableList] = useState([]);
   const colorList = useMemo(() => variableList.filter(item => item.target === 'color'), [variableList]);
   const valueList = useMemo(() => variableList.filter(item => item.target === 'value'), [variableList]);
+  const variableMap = useMemo(() => {
+    let map = {};
+    variableList.map(item => {
+      map[item.name] = item;
+    });
+    return map;
+  }, [variableList]);
 
   const handleChangeColor = (color, name) => {
     let hex = (color.hex + decimalToHex(color.rgb.a)).toUpperCase();
@@ -78,25 +85,31 @@ function App() {
       {variableList.length === 0  && <Empty style={{marginTop: '15%'}} />}
       {colorList.length > 0 && <Card title={'颜色'}>
         <ul className='colorCards'>
-          {colorList.map(item => <li key={item.name} className='colorCard'>
-            <div className='cardTitle'>
-              <Tooltip title={item.remark}>
-                {item.remark}
-              </Tooltip>
-            </div>
-            <div className='cardContent'>
-              <Popover
-                destroyTooltipOnHide={true}
-                overlayClassName='colorPickerPop'
-                content={<div>
-                  <ChromePicker color={item.color} onChange={newColor => handleChangeColor(newColor, item.name)} />
-                </div>}>
-                <div className='color' style={{ backgroundColor: item.color }}></div>
-              </Popover>
+          {colorList.map(data => {
+            let item = {...data};
+            if (item.color.startsWith('var')) {
+              item.color = variableMap[item.color.replace('var(--', '').replace(')', '')].color;
+            }
+            return <li key={item.name} className='colorCard'>
+              <div className='cardTitle'>
+                <Tooltip title={<span>{item.remark}(--{item.name})</span>}>
+                  {item.remark}
+                </Tooltip>
+              </div>
+              <div className='cardContent'>
+                {/* <Popover
+                  destroyTooltipOnHide={true}
+                  overlayClassName='colorPickerPop'
+                  content={<div>
+                    <ChromePicker color={item.color} onChange={newColor => handleChangeColor(newColor, item.name)} />
+                  </div>}> */}
+                  <div className='color' style={{ backgroundColor: item.color }}></div>
+                {/* </Popover> */}
 
-              <div className='colorHEX'>{item.color}</div>
-            </div>
-          </li>)}
+                <div className='colorHEX'>{item.color}</div>
+              </div>
+            </li>
+        })}
         </ul>
       </Card>}
 
@@ -111,6 +124,7 @@ function App() {
       </Card>}
 
       <ModalAdd
+        colorList={colorList}
         visible={showAddModal}
         onOk={handleAddItem}
         onCancel={_ => setShowAddModal(false)}
