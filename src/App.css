@@ -1,12 +1,21 @@
 .colorCards {
-  list-style: none;
   display: flex;
   margin: 20px;
   gap: 20px;
 }
 
-.colorCards li {
+.colorCard {
   width: 80px;
+  list-style: none;
+}
+
+.colorCard .cardTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.colorCard .cardContent {
   height: 110px;
   box-shadow: .5px 0 4px #CCC;
   border-radius: 10px;
@@ -23,6 +32,11 @@
   cursor: pointer;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
 }
 
 .colorCards .colorHEX {
@@ -53,4 +67,22 @@
 .colorPickerPop .ant-popover-inner-content{
   padding: 0;
   position: relative;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+}
+
+.sizeItem {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.sizeItem:last-child {
+  margin-bottom: 0;
+}
+
+.sizeItem label {
+  color: #666;
 }
