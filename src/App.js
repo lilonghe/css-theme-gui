@@ -14,10 +14,10 @@ function App() {
   const [showAddModal, setShowAddModal] = useState();
   const [variableList, setVariableList] = useState([]);
   const colorList = useMemo(() => variableList.filter(item => item.target === 'color'), [variableList]);
-  const sizeList = useMemo(() => variableList.filter(item => item.target === 'size'), [variableList]);
+  const valueList = useMemo(() => variableList.filter(item => item.target === 'value'), [variableList]);
 
   const handleChangeColor = (color, name) => {
-    let hex = color.hex + decimalToHex(color.rgb.a);
+    let hex = (color.hex + decimalToHex(color.rgb.a)).toUpperCase();
 
     let i = variableList.findIndex(item => item.name === name);
     variableList[i].color = hex;
@@ -30,7 +30,7 @@ function App() {
     let code = '';
     list.map((item, i) => {
       item.remark && (code += `    // ${item.remark}\n`);
-      code += `    --${item.name}: ${item.target === 'color' ? item.color : item.size};`;
+      code += `    --${item.name}: ${item.target === 'color' ? item.color : item.value};`;
       if (i !== list.length - 1) {
         code += '\n\n';
       }
@@ -40,11 +40,11 @@ function App() {
 
   const handleGenerateCode = () => {
     let coloCSSCode = generateCSSVariable(colorList);
-    let sizeCSSCode = generateCSSVariable(sizeList);
+    let valueCSSCode = generateCSSVariable(valueList);
 
-    let code = coloCSSCode + sizeCSSCode;
-    if (coloCSSCode.length !== 0 && sizeCSSCode.length !== 0) {
-      code = coloCSSCode + '\n\n' + sizeCSSCode;
+    let code = coloCSSCode + valueCSSCode;
+    if (coloCSSCode.length !== 0 && valueCSSCode.length !== 0) {
+      code = coloCSSCode + '\n\n' + valueCSSCode;
     }
 
     let cssCode = generateCSSCode(code);
@@ -52,7 +52,7 @@ function App() {
       icon: false,
       width: 800,
       content: <div>
-        <Input.TextArea spellCheck={false} value={cssCode} autoSize={true} />
+        <Input.TextArea value={cssCode} autoSize={true} />
       </div>
     })
   }
@@ -100,9 +100,13 @@ function App() {
         </ul>
       </Card>}
 
-      {sizeList.length > 0 && <Card title='尺寸'>
+      {valueList.length > 0 && <Card title='内容'>
         <ul>
-          {sizeList.map(item => <li className='sizeItem' key={item.name}><label>{item.remark}(--{item.name})：</label>{item.size}</li>)}
+          {valueList.map(item => <li 
+            className='valueItem' 
+            key={item.name}>
+              <label>{item.remark}(--{item.name})：</label><span>{item.value}</span>
+            </li>)}
         </ul>
       </Card>}
 

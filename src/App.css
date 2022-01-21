@@ -74,15 +74,21 @@
   gap: 10px;
 }
 
-.sizeItem {
+.valueItem {
   list-style: none;
   margin-bottom: 20px;
 }
 
-.sizeItem:last-child {
+.valueItem:last-child {
   margin-bottom: 0;
 }
 
-.sizeItem label {
+.valueItem label {
   color: #666;
+}
+
+.valueItem span {
+  background-color: antiquewhite;
+  padding: 3px 4px;
+  border-radius: 3px;
 }
