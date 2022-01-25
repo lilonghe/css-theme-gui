@@ -35,10 +35,10 @@ export default function ModalAdd({ visible, onCancel, onOk, colorList = [] }) {
         {({ getFieldValue }) => {
           return getFieldValue('target') === 'color' ?
             <div>
-              <Form.Item name={'color'} label='色值' initialValue={'#FFF'} rules={[require]}>
+              <Form.Item name={'value'} label='色值' initialValue={'#FFF'} rules={[require]}>
                 <FormColorPicker />
               </Form.Item>
-              <Form.Item name={'color'} label='色值'>
+              <Form.Item name={'value'} label='色值'>
                 <Select>
                   {colorList.map(item => <Select.Option key={`var(--${item.name})`}>{item.remark}(--{item.name})</Select.Option>)}
                 </Select>

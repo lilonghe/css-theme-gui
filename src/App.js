@@ -4,6 +4,7 @@ import { ChromePicker } from 'react-color';
 import { Button, Card, Empty, Input, Modal, PageHeader, Popover, Tooltip } from 'antd';
 import { generateCSSCode, saveVariableList, readVariableList } from './utils';
 import ModalAdd from './ModalAdd';
+import VariableListView from './VariableListView';
 
 const decimalToHex = (alpha) => {
   let aHex = Math.round(255 * alpha).toString(16);
@@ -27,7 +28,7 @@ function App() {
     let hex = (color.hex + decimalToHex(color.rgb.a)).toUpperCase();
 
     let i = variableList.findIndex(item => item.name === name);
-    variableList[i].color = hex;
+    variableList[i].value = hex;
 
     setVariableList([...variableList]);
     saveVariableList(variableList);
@@ -37,7 +38,7 @@ function App() {
     let code = '';
     list.map((item, i) => {
       item.remark && (code += `    // ${item.remark}\n`);
-      code += `    --${item.name}: ${item.target === 'color' ? item.color : item.value};`;
+      code += `    --${item.name}: ${item.target === 'color' ? item.value : item.value};`;
       if (i !== list.length - 1) {
         code += '\n\n';
       }
@@ -87,8 +88,8 @@ function App() {
         <ul className='colorCards'>
           {colorList.map(data => {
             let item = {...data};
-            if (item.color.startsWith('var')) {
-              item.color = variableMap[item.color.replace('var(--', '').replace(')', '')].color;
+            if (item.value.startsWith('var')) {
+              item.value = variableMap[item.value.replace('var(--', '').replace(')', '')].value;
             }
             return <li key={item.name} className='colorCard'>
               <div className='cardTitle'>
@@ -97,16 +98,8 @@ function App() {
                 </Tooltip>
               </div>
               <div className='cardContent'>
-                {/* <Popover
-                  destroyTooltipOnHide={true}
-                  overlayClassName='colorPickerPop'
-                  content={<div>
-                    <ChromePicker color={item.color} onChange={newColor => handleChangeColor(newColor, item.name)} />
-                  </div>}> */}
-                  <div className='color' style={{ backgroundColor: item.color }}></div>
-                {/* </Popover> */}
-
-                <div className='colorHEX'>{item.color}</div>
+                <div className='color' style={{ backgroundColor: item.value }}></div>
+                <div className='colorHEX'>{item.value}</div>
               </div>
             </li>
         })}
@@ -122,6 +115,10 @@ function App() {
             </li>)}
         </ul>
       </Card>}
+
+      <Card title='变量列表'>
+        <VariableListView variableList={variableList} />
+      </Card>
 
       <ModalAdd
         colorList={colorList}
